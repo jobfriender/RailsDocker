@@ -1,0 +1,23 @@
+#!/bin/sh
+# https://stackoverflow.com/a/38732187/1935918
+
+# atomic fail
+set -e
+
+if [ -f /app/tmp/pids/server.pid ]; then
+  rm /app/tmp/pids/server.pid
+fi
+
+gem install rails
+bundle install
+
+#bundle exec rails db:migrate 2>/dev/null || bundle exec rails db:setup
+#bundle exec rails db:seed
+#bundle install
+#bundle exec rake db:migrate
+#bundle exec rake db:reset
+
+#bundle config --delete bin
+#rails app:update:bin
+
+exec bundle exec "$@"

@@ -1,0 +1,89 @@
+version: '2'
+services:
+  db:
+    container_name: 'postgres_jf'
+    image: postgres:9.6
+    environment:
+      POSTGRES_USER: postgres # delete image you change these
+      POSTGRES_PASSWORD: testing
+    ports:
+      - '5433:5432' # can't change 5432 to 5433 on the container
+    volumes:
+      - jobfrienderpostgres:/var/lib/postgresql/data
+    # deprecated in docker V3
+    mem_limit: 1g
+
+  redis:
+    image: redis
+    container_name: 'redis'
+    ports:
+      - '6379:6379'
+    volumes:
+      # volume jobfrienderredis is local
+      # /var/lib/redis/data is on the docker container
+      - jobfrienderredis:/var/lib/redis/data
+    # deprecated in docker V3
+    mem_limit: 1g
+
+  #sidekiq:
+  #  build: .
+    #entrypoint: ['bin/entry']
+  #  container_name: 'sidekiq'
+  #  depends_on:
+  #    - 'db'
+  #    - 'redis'
+  #  command: sidekiq
+  #  volumes:
+  #    - 'sidekiq:/var/www/jobfriender'
+  #  env_file:
+  #    - '.env'
+  #  depends_on:
+  #    - 'redis'
+
+  mongodb:
+    image: mongo:latest
+    container_name: "mongodb"
+    environment:
+      - MONGO_DATA_DIR=/mongodb-data/db
+      - MONGO_LOG_DIR=/dev/null
+    # question: is data dir hardcoded into mongodb config on the container
+    volumes:
+      - 'mongodb:/data/db'
+    ports:
+      - 27017:27017
+    command: mongod --smallfiles --logpath=/dev/null # --quiet
+
+  web:
+    build: .
+    container_name: 'web'
+    entrypoint: ['bin/entry']
+    command: rails s
+    ports:
+      - "3000:3000"
+    environment:
+      - db_host=db
+      - db_port=5432
+      - redis_host=redis
+      - redis_port=6379
+      # fixes the localhost connection error
+      # ruby cli gem uses this
+      - REDIS_URL=redis://redis:6379/0
+    volumes:
+      - .:/var/www
+    links:
+      - redis
+      - db
+      #- sidekiq
+      - mongodb
+    depends_on:
+      - 'db'
+      - 'redis'
+      - 'mongodb'
+
+volumes:
+  jobfrienderweb:
+  jobfrienderpostgres:
+  jobfrienderredis:
+  sidekiq:
+  mongodb:
+
