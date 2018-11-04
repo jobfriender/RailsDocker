@@ -29,6 +29,6 @@ Things you may want to cover:
 
 * Deployment instructions
 
-* Local Rails Server Already Running
+## Local Rails Server Already Running
 
 ```kill -9 `ps aux | grep rails | awk '{print $2}'````
