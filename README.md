@@ -31,4 +31,4 @@ Things you may want to cover:
 
 ## Local Rails Server Already Running
 
-```kill -9 `ps aux | grep rails | awk '{print $2}'````
+```kill -9 `ps aux | grep rails | awk '{print $2}'```
