@@ -1,10 +1,13 @@
-FROM ruby:2.5
+FROM ruby:2.5.3-alpine3.7
 MAINTAINER Nathan Sire <nathansire@jobfriender.com>
 
-RUN apt-get update
-RUN apt-get install -y apt-utils
-RUN apt-get install -y libpq-dev # for postgres
-RUN apt-get install -y nodejs # for a JS runtime
+# Minimal requirements to run a Rails app
+RUN apk add --no-cache --update build-base \
+                                linux-headers \
+                                git \
+                                postgresql-dev \
+                                nodejs \
+                                tzdata
 
 # Set an environment variable to store where the app is installed to inside
 # of the Docker image.
