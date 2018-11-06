@@ -35,12 +35,23 @@ RUN apt-get install -y qt5-default libqt5webkit5-dev # capybara webkit needs thi
 
 RUN apt-get install rsync
 
+# https://medium.com/magnetis-backstage/how-to-cache-bundle-install-with-docker-7bed453a5800
 # Set an environment variable to store where the app is installed to inside
 # of the Docker image.
-ENV APP_HOME /var/www
-WORKDIR $APP_HOME
-ADD Gemfile* $APP_HOME/
-ADD . $APP_HOME
+#ENV APPHOME /var/www
+#COPY Gemfile* /tmp/
+# cache the gems
+#WORKDIR /tmp
+#RUN bundle install
+#RUN mkdir $APP_HOME
+#WORKDIR $APP_HOME
+#ADD . $APPHOME
+
+ENV APPHOME /var/www
+RUN mkdir $APPHOME
+WORKDIR $APPHOME
+ENV BUNDLE_PATH /box
+ADD . $APPHOME
 
 # rsync
 EXPOSE 873

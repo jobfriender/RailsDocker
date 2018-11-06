@@ -57,7 +57,6 @@ services:
     build: .
     container_name: 'web'
     entrypoint: ['bin/entry']
-    command: rails s
     ports:
       - "3000:3000"
     environment:
@@ -70,6 +69,7 @@ services:
       - REDIS_URL=redis://redis:6379/0
     volumes:
       - .:/var/www
+      - box
     links:
       - redis
       - db
@@ -79,6 +79,13 @@ services:
       - 'db'
       - 'redis'
       - 'mongodb'
+
+  # cache the gems for re-use
+  # https://medium.com/magnetis-backstage/how-to-cache-bundle-install-with-docker-7bed453a5800
+  box:
+    image: busybox
+    volumes:
+      - /box
 
 volumes:
   jobfrienderweb:
