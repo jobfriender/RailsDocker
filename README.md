@@ -1,10 +1,12 @@
 # README
 
+Ruby (2.5.3) on Rails with Docker
+
 ## Master Branch Uses Debian
 
 ## Setup
 
-```sh RemoveAllDocker.sh```
+```bash RemoveAllDocker.sh```
 
 ```docker-compose --verbose up```
 
